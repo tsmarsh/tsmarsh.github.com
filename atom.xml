@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tailored Shapes]]></title>
+  <link href="http://tsmarsh.github.com/atom.xml" rel="self"/>
+  <link href="http://tsmarsh.github.com/"/>
+  <updated>2013-03-07T22:46:14-06:00</updated>
+  <id>http://tsmarsh.github.com/</id>
+  <author>
+    <name><![CDATA[Tom Marsh]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[What do Installers do?]]></title>
+    <link href="http://tsmarsh.github.com/blog/2013/03/07/apple-installers-do-not-work-how-you-think/"/>
+    <updated>2013-03-07T21:07:00-06:00</updated>
+    <id>http://tsmarsh.github.com/blog/2013/03/07/apple-installers-do-not-work-how-you-think</id>
+    <content type="html"><![CDATA[<p>How do Apple&#8217;s .pkg installation files work?</p>
+
+<p>Today I learned the answer to a couple of questions I didn&#8217;t realize I had:</p>
+
+<p>Why are you prompted to install to a volume, not a directory?</p>
+
+<p>Can I really keep applications outside of the /Applications directory?</p>
+
+<!-- more -->
+
+
+<p>The basic premise of an installer is simple. You build a file that contains enough information to put the right files in the right places and some smarts to register them with any part of the OS that demands to be told when these things happens. That is how it works on Linux, Windows and Java and that was my assumption for OS X.</p>
+
+<p>The tools are set up to let you believe that is how it works too.</p>
+
+<pre><code>productbuild --component path/to/Some.app /Applications Installer.pkg
+</code></pre>
+
+<p>This should read something like: build a product called Installer.pkg that places Some.app in /Applications.</p>
+
+<p>Simple.</p>
+
+<p>Except that isn&#8217;t actually how it works at all.</p>
+
+<p>Despite being a long time Mac user and knowing that I could run applications from anywhere, I just assumed that was at the cost breaking future upgrades. It turns out that I didn&#8217;t have to worry, you see the /Applications in that command is just where it will put files if all else fails and because of some sophisticated thinking on Apples part.</p>
+
+<p>The .app contains a Info.plist, and that contains a unique string that identifies the application to&#8230; spotlight.</p>
+
+<p>So when the installer is picking a location each file, if that bundle contains an Info.plist it looks the file up in spotlight and installs it over the first bundle that matches that string, not the install location. If you are testing you freshly built package that is most likely the .app that you just built your package from, not /Applications. This isn&#8217;t documented in the man pages for pkgutil, pkgbuild, productbuild or installer and I strongly suspect it is the source of a lot of the confusion around the &#8216;bugs&#8217; in the much maligned PackageMake&#8230; well some of the reasons.</p>
+
+<p>So why can&#8217;t you pick a more granular install location?</p>
+
+<p>You are not picking an install location you are picking a search root for Spotlight. If a match is found for the bundles you are installing the will be installed at that location.</p>
+
+<p>Can you really keep Applications anywhere?</p>
+
+<p>Sort of. Apple appears to have gone above and beyond to make that truth, but its too easy for developers to make assumptions about the locations of files and hard code them in to the bundle. An inability of an app to exist outside of /Applications should be considered a bug.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Agile engagement anti patterns]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/17/working-with-agilistas/"/>
+    <updated>2012-10-17T12:04:00-05:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/17/working-with-agilistas</id>
+    <content type="html"><![CDATA[<p>I&#8217;ve been on both sides of the Agile transformation equation, both transformed and the transformer. Over the years I have seen a couple of anti-patterns in engagements that should be avoided.</p>
+
+<!-- more -->
+
+
+<blockquote><p>Prove that you can deliver and we&#8217;ll look at transforming your supporting teams later</p></blockquote>
+
+<p>This seems very reasonable on the surface, especially in enterprise computing, but it is doomed to failure. An agile project that is surrounded by waterfall teams is essentially in the toilet.</p>
+
+<p>An effective agile team must control every aspect of development from UX to infrastructure. That is why small teams are often more affective than big teams. If you cannot change the database tables, choose the tooling or access the servers then you are not proving that agile works, you are proving that you can strangle agile to death. The good news is that it has been proven numerous times and does not need repeating.</p>
+
+<p>What this statement is really trying to do is limit risk and that requires trust. Don&#8217;t give the agile team something that you are willing to let run in the cloud, or where you don&#8217;t mind if they administer the servers themselves. It doesn&#8217;t have to be small, just independent and watch the ecosystem you want build around it.</p>
+
+<blockquote><p>Please teach our developers how to do a better job. Just leave us out of it.</p></blockquote>
+
+<p>Agile is as much a business practice as a development practice and requires that practitioners are empowered to change the process they are working in. That can step on a lot of middle managements toes, but that is okay. There is still a lot for you to do: politics. Building relationships withing the company and using those relationships to really empower your team are now what you do and on a well oiled agile team, your practitioners are going to be too busy building working products to do it themselves.</p>
+
+<p>If you can&#8217;t bare the idea of not being able to micromanage, demand documentation or ask for code review reports agile isn&#8217;t for you. I have worked in enough companies where all of those practices are the shield that keeps you and your team in a job. That doesn&#8217;t mean that you are doing it wrong, just that you aren&#8217;t ready for agile yet.</p>
+
+<blockquote><p>Can you show us how to be agile without any of that pair programming, or automated testing bullshit?</p></blockquote>
+
+<p>Pair programming and automated testing are core agile practices, but they are not written in stone. There are some very real reasons why you wouldn&#8217;t do some of the more &#8216;expensive&#8217; agile practices.</p>
+
+<p>Pair programming, automated testing and continuous integration have been demonstrated to significantly reduce the need for external training, reduce the time for new developers to learn a code base, reduce the number of bugs found and the cost of fixing them once they are found. If you do not care about these side effects then they are not for you. Lets break that down:</p>
+
+<p>You are not hiring and your staff are intimately familiar with the code base and technologies already.
+You have a high tolerance for bugs. Bugs do not result in lawsuits, death or high customer loss.
+Finding and fixing bugs is not significantly affecting the release of new features</p>
+
+<p>The real question then is why do you want to be agile? Cowboy has its place. If you are venturing out in to the unknown and the most important thing is that you get somewhere first: Cowboy. Once you get there and you are ready to replace the roadside shack that you built with a new, reliable place of business call in the agile consultants and build it with you.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Game of Life Kata in Clojure]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/"/>
+    <updated>2012-10-15T07:36:00-05:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure</id>
+    <content type="html"><![CDATA[<p>Being an ex-Guardianista Conway&#8217;s Game of Life has a special place in my heart. The problem is simple enough that you can express it in 6 or 7 cards and devious enough that two developers rarely come up with the same solution twice. It can be easily test driven and, in Java, the naive approach takes about and hour and a half to complete and usually spans three to five classes.</p>
+
+<p>It is a neat problem to put a language through whilst you&#8217;re learning it.</p>
+
+<p>Things I really liked about Clojure:</p>
+
+<ul>
+<li><a href="http://example.com/" title="Optional Title">Leiningen</a> : the best build tool I&#8217;ve ever user. Easy to configure. Easy to find help on.</li>
+<li><a href="https://github.com/marick/Midje">Midje</a>: lovely little testing framework that doesn&#8217;t feel like it is getting in your way</li>
+<li>Being able to make my solution parallel simply by making map -> pmap (not that it helped performance)</li>
+</ul>
+
+
+<p>Things that I learned to like:</p>
+
+<ul>
+<li>Immutable objects: I thought I was pretty good at making my methods idempotent in OO code. I was surprised at how much I had to shift my thinking to get it to work for real.</li>
+<li>Functional style: I really though this would be a breeze coming from Ruby / Python / Javascript, but functions without objects are completely different. What really surprised me is that loosing the structure and state embodied in objects actually made the solution feel lighter and me for more powerful.</li>
+<li>REPL: Immutable objects and strict scoping for values complicates the REPL experience. But it is still very nice to have a REPL, vs Java / C#.</li>
+<li>(): They really do melt away.</li>
+</ul>
+
+
+<p>Things that I didn&#8217;t like:</p>
+
+<ul>
+<li>Clojure start-up time: it really is a second more than the usual JVM start up, enough to affect the frequency of running the tests compared to python or ruby.</li>
+<li>Debugging: I tried and failed to use trace and although you get some feed back from the exceptions, it was not as laser guided as Java or C#.</li>
+<li>Learning curve: Learning new languages is fun for me. I&#8217;ve been programming since I was five years old in Logo and Basic. I learned Java and Haskell at University and I&#8217;ve been programming professionally in Java, C#, Python and Ruby for the last 8 years. Clojure was the toughest of all of them. It was like learning to code from scratch all over again.</li>
+<li>Readability: Clojure lends itself to a terse style of programming and I can imagine finding it hard to read my own code in a couple of weeks. Python and Java have it beat.</li>
+<li>IDE Support: Syntax highlighting and paren matching is about as good as it gets. That is plenty though. I&#8217;ve heard good things from Emacs users about Clojure support, but have no experience myself.</li>
+</ul>
+
+
+<p>I&#8217;ve come away from this experience a lot more positively than I expected too. Clojure is a language that has opened my eyes to complete different way of solving problems, and I liked it. There is a maturity in the ecosystem that is sorely missing from C#, Python and Scala in the form of leiningen which is comparable to Bundler and significantly better than Maven.</p>
+
+<p>My biggest concern is that I have no idea how I would sell Clojure on a project. It is hard enough to find developers who can work in Java and C#, and harder still to find Ruby developers. I&#8217;m not sure I could apply the approach that the Guardian does for Scala and hire talented Java developers and then train them in Clojure. I relied far more on my Computer Science degree to get me through the Kata than my Java experience. Scala advantage here is being able to write Scala like Java with closures and type inference. If universities started to teach Lisps with the same passion as they do C style languages this would be less of a problem.</p>
+
+<p>There are some problem spaces where Clojure looks really attractive. Expert systems written using core.logic look very interesting, but they are competing head on with Drools which has a significantly lower cognitive cost of entry even if Clojure definitely has a syntax advantage in that space.</p>
+
+<p>Concurrency is another area where Clojure makes excellent choices but my experience tells me that you really need close to a hundred cores to make concurrency pay because of synchronization costs. If you need concurrency to deal with IO delay then the Disruptor pattern or just an event loop provide much better bang for buck and even languages with global interpreter locks (GIL) like Ruby and Python are more than adequate for that. If you have an embarrassingly parallel computation problem Clojure may get you to a solution faster. Projects like <a href="http://www.kickstarter.com/projects/adapteva/parallella-a-supercomputer-for-everyone">Parallella</a> might also help prove that multi-core is the near future. If you can genuinely out perform a $1000 server with $99 of arm chips with 16 co-processors that is a compelling reason to look at Clojure / Go / Scala.</p>
+
+<p>DSLs are another area where Clojure excels. Macros mean you can re-write the syntax in the language with no runtime penalty. I&#8217;m just not sure that DSLs are compelling on their own and I&#8217;ve seen enough bad DSLs in Ruby to know that they are no panacea.</p>
+
+<p>So that is my view on Clojure. It is a fantastic language that is looking for a solution that can justify its learning curve.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Automated Testing]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/12/automated-testing/"/>
+    <updated>2012-10-12T19:01:00-05:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/12/automated-testing</id>
+    <content type="html"><![CDATA[<p>I was introduced to Unit Testing back in 2007 on my first agile gig. At that point
+Unit tests were defined to me as &#8216;tests that proved individual units of code&#8217;. Database connections were a smell, but not forbidden; mocks, stubs were actively encouraged. The closer we got to 100% coverage the better, but we did at least have the sense to not test the language, so no constructor or property testing.</p>
+
+<p>Functional tests were then defined to me as &#8216;tests the prove that individual units work together&#8217;.
+This usually meant writing unit tests, but with spring providing you with real objects rather than mocks and it was generally accepted that a real database / service would be used. This was often an after thought, as we already had close to 100% unit coverage. There purpose was to catch bugs that only occurred in the interaction of objects that would otherwise have only been tested in isolation. The functional suite was a little light, predominantly because it was never really clear if functional tests were really just unit tests.</p>
+
+<p>Integration tests were then described as &#8216;proving that the whole thing works together&#8217;, and were originally HTTPUnit tests, until we &#8216;advanced&#8217; towards selenium. They were slow and unreliable. The build would break for environmental reasons so often that it was a surprise when they broke for real.</p>
+
+<p>Despite this I was sold, at least I was sold on Unit testing. It just made my code better and gave me a way of thinking about the problem before I thought about the solution, but there were a few problems.</p>
+
+<ul>
+<li>Slow tests: Unit tests got slow fast. This boiled down to
+
+<ul>
+<li>Database calls: you can perform 100 unit tests in the time it takes to make one database call</li>
+<li>Over mocking / stubbing: reflection is 10-100 times slower than a normal function call and as test code is only run once the most VMs won&#8217;t optimize it away.</li>
+</ul>
+</li>
+<li>Writing test code often takes a lot longer than writing the production code.</li>
+<li>Over testing:
+
+<ul>
+<li>having to change tests in the unit, functional and integration tests</li>
+<li>having to change five unit tests for one change.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Five years on and my styles have changed. This is how I see automated testing now.</p>
+
+<!-- more -->
+
+
+<p>Source control describes the &#8216;who&#8217;, &#8216;when&#8217; and &#8216;why&#8217;. This works better the smaller the commit. If you can link your commit to bug / story tracking software all the better. Blame should allow you figure out why a piece of code looks the way it does.</p>
+
+<p><em>Functional tests describe the &#8216;what&#8217;.</em></p>
+
+<p>They are the first tests that you write, and describe the API. A measure of a good functional test is that it doesn&#8217;t change when you re-factor your code. They should only change when you enhance your code by adding or removing functionality. Real objects should be used whenever possible, but calls to databases and services should be avoided. Mocking and stubbing of external libraries, services and databases is encouraged only if they make the test faster and more reliable. These tests should be really, really fast.</p>
+
+<p>This concept is stolen directly from the work of Dan North and Behavioral Driven Design although I have more frequently seen that applied to integration tests rather than functional tests and that almost never works.</p>
+
+<p><em>Unit tests describe the &#8216;how&#8217;.</em></p>
+
+<p>The public methods that you are testing via functional tests should be light, with the computation happening in well named protected methods that are called from the public method within reason. These methods need unit testing as they describe &#8216;how&#8217; you are implementing your API. Expect to write many unit tests in an effort to get your functional tests to pass.</p>
+
+<p>Unit tests have similar life cycles to the code they test. You should expect a great deal of churn as your code evolves. With each change requiring a change to a unit test. If you can change the code without affecting a unit test you should be asking yourself if you are missing a unit test, or if your unit test was really a functional test.</p>
+
+<p>If you did no other automated testing than this, you would be in really good shape. Follow this plan and you will have a test suite that executes hundreds of tests per second and each of those tests can be run in parallel. You will also have a nicely documented piece of software, with each line of code&#8217;s purpose explained by a mixture of source control, functional and unit testing.</p>
+
+<p>But you still need to do manual testing. In fact, from this point on, the testing should be orchestrated by someone other than the developer on the story and you will always need manual testing.</p>
+
+<p>Integration tests are where functional tests meet reality. You use a real database, you might even hit real services, provided that you have as much control over those services as you do your database. The application is poked in the same way a user would poke it.</p>
+
+<p>Two things separate my views on integration tests from the integration of old.</p>
+
+<p>Firstly, I believe Selenium is the tool of last resort. If you use functional and unit tests as I&#8217;ve described for both your server and client side logic you already have a pretty comprehensive test suite. All that is left to test is that you get the right data back for the right inputs when everything is wired together. That can be achieved with something as simple as HTTPUnit or even just poking controllers from your XUnit tool. You do loose the ability to click the button or check that a pop-up pops, but you get a test suite that is hundreds of times faster, significantly simpler to maintain and reliable.</p>
+
+<p>Selenium is a miracle of modern engineering, built by some of the most talented and passionate developers in the world, but they are totally beholden to the teams that build browsers who, whilst selenium might be on their priority list, it is towards the bottom. The result is that browser automation tests crash. They crash because browsers don&#8217;t like being poked by anything other than a human at human speeds. If you absolutely have to test that your pop-up pops every build, automatically, Selenium is the best tool, it just may be more expensive than you realized.</p>
+
+<p>Secondly, I think that they need to be owned by some one who is directly responsible for efficiency of the team, not the functionality / efficiency of the application. Team / Tech / QA leads or the PM are all good candidates, business owners and the development team are not. There needs to be a budget for integration tests and that budget needs to be tracked by the project as a whole. If an integration tests breaks for a legitimate business reason developers first should inform QA that they need to manually test that part of the code now and then deactivate that test.</p>
+
+<p>It is then the responsibility of whomever owns the integration build to get time allocated to fix it.</p>
+
+<p>Making integration tests track-able outside of the normal story cost forces the owners to focus on keeping them as cheap and efficient as possible and stops the anti-pattern of having an &#8216;acceptance&#8217; test for each story. The reason for this is that integration tests take minutes to run, and are rarely embarrassingly parallel. Adding minutes to the build has a direct effect on velocity and whilst integration tests can save a significant amount of QA churn, they are not a silver bullet. There needs to be evidence that the integration suite is actually improving velocity before each and every minute is added.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Desk Checking]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/10/desk-checking/"/>
+    <updated>2012-10-10T05:38:00-05:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/10/desk-checking</id>
+    <content type="html"><![CDATA[<p>If there is one practice guaranteed to reduce the number of bugs in a system it is desk checking.</p>
+
+<p>The process should look something like this:</p>
+
+<ol>
+<li>Developer believes they have finished a story</li>
+<li>Developer integrates with the latest version of the code</li>
+<li>Developer runs automated tests</li>
+<li>Developer asks the QA to &#8216;Desk Check&#8217; their code</li>
+<li>QA runs a quick, manual smoke test that puts the system through its paces</li>
+<li>If any errors are found, Developer and QA discuss mechanisms for automating that testing at a unit or functional level.</li>
+<li>Developer implements those tests, fixes problem and repeats.</li>
+</ol>
+
+
+<p>Up until step four this process should be familiar to all developers. In practice, steps four through six rarely take more than five minutes, so if it catches just a single bug it can save the project an hour of developer context switching. There are other subtle benefits as well. Letting developers see how you test can help reduce the time it takes to test even further, it may even help them to identify other problems.</p>
+
+<p>All parties involved in defect resolution agree that early diagnosis and resolution of bugs is good for everyone, but &#8216;Desk Checking&#8217; is often met with resistance from both QA and Developers.</p>
+
+<p>I&#8217;ve experienced complaints from QA that desk checking interferes with normal testing, but really the attitude should be that &#8216;normal testing&#8217; is the filler between desk checks, they are that effective.</p>
+
+<p>It is also a little confrontational. Developers can react badly to having their weaknesses exposed so publicly and personally. This is just an unhealthy attitude on the part of the developer and should be considered a smell by their management. Remember, it may not be productive in the long run, but making a developer cry is a QA rite of passage.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Nurture your QA]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/09/nurture-your-qa/"/>
+    <updated>2012-10-09T21:13:00-05:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/09/nurture-your-qa</id>
+    <content type="html"><![CDATA[<p>We have all heard the rhetoric that &#8216;Quality&#8217; is everyones responsibility, but &#8216;Quality&#8217; is not a metric that is easy to define. That is why we have QA. To my mind QA is one of the most maligned and under-rated roles in software development, but it is probably the most important of all of them.</p>
+
+<p>It doesn&#8217;t matter how reliable or clever your product is if it &#8216;sucks&#8217;.</p>
+
+<p>I have argued that Steve Jobs may have been a marvelous raconteur but that his real talent was quality assurance. His public appearance may have been full of rhetoric and bluff, but for the most part, the &#8216;reality distortion field&#8217; experience converted millions of people to iPod and iPhone over a period of years, with a market that grew release after release and that is a hallmark of quality.</p>
+
+<p>I don&#8217;t believe Mr. Jobs followed the evolution that I am about to outline at least not professionally, a successful start up will do that to you. In any case, that requires a mixture of luck and foresight which isn&#8217;t a pre-requisite for becoming a QA. But I do believe that, if nurtured correctly, you can grow your own QA.</p>
+
+<!-- more -->
+
+
+
+
+<dl>
+<dt>Machina</dt>
+
+<dd>Follows someone else&#8217;s test plan. Raises meaningless bugs that say that a test failed without any investigation in to the possible underlying causes. </dd>
+
+<dd>This QA can and should be replaced with a script, but you don&#8217;t tell them that the script they are following has already been automated. You let them begin to get a feel for what a technology product really is and where they break. They have to feel the frustration of a broken build and deployment and learn to have a healthy skepticism of everything that comes out of a developer. Eventually they start to find bugs the automated software didn&#8217;t and are surprised when nobody is impressed. </dd>
+
+
+<dt>Tester</dt>
+
+<dd>Having been around the block a couple of times this QA is ready to work to the beat of their own test plan. They are starting to get a feel for where bugs hide. They start to make unreasonable demands from the development team like: &#8220;I want a stable build&#8221;, &#8220;Please add test X to the automation suite&#8221;.</dd>
+
+<dd>Still young they consider their job to be finding bugs and reporting them. A product is ready when the bug queue is empty.</dd>
+
+<dt>QA</dt>
+
+<dd>Frustrated and confused as to why they are called &#8216;Quality Assurance&#8217; yet they are embarrassed to show their friends and family the product they have been working on because of the lack of quality. Something has to change.</dd>
+
+<dd>While still possessing little or no desire to be a coder, this QA is willing to admit that there is a database and that being able to query it may make their lives easier. They have learned advanced browser skills and enough about how CSS and HTML to not glaze over when the developer starts talking about the box model. They were listening when the product team were talking and really feel like they understand what the product needs to be. They were listening to the marketing team and really understand what it will take for the product to be a success. They were listening when the development team described their solution and asking how they were going to solve problem X if Y is true elsewhere in the system.</dd>
+
+<dd>Deep inside the QA all the pieces start to fall in to place. They use all of this knowledge to help define what quality means for this product and apply it everywhere. </dd>
+
+<dt>Product</dt>
+
+<dd>Established as the font of all knowledge on the project this QA is given the power to reject a feature, not because it has &#8216;bugs&#8217; but because it is not fit for purpose and will lower the quality of the solution.</dd>
+
+<dd>They are the physical embodiment of taste on the project. The product team thinks they are on their team. Hell, they might even be the product manager, but we know the truth, they are QA.</dd>
+
+<dd>They know that QA is what made them what they are today and empower the next generation to evolve to level 2 knowing that some will be lost to the dark side of development on the way, but that is ok. The seeds of quality have been planted and they will be better developers for it.</dd>
+
+<dd>For reasons that baffle the current team they are involved in all hiring decisions to ensure that individuals share their passion for quality, or at least display the potential to learn it.
+</dd>
+
+<dt>God</dt>
+
+<dd>Impressed by the high margins and viral success caused by having the most tasteful and reliable product on the market you promote the QA to position where they can green light new products. </dd>
+
+<dd>The years spent as a real QA makes them immune to the whines from the &#8216;technology&#8217; group that solution X will save Y money because Z says it is cool. They don&#8217;t care if a server will deliver more pages per second, or if a new framework will allow the developer to finish features faster. They care if it means they can deliver &#8216;quality&#8217; faster and that is where you make money.</dd>
+
+<dd>The years spent in Product give them good instincts for what actually works in the market place and when to call it quits. Their best day is when they notice a &#8216;bug&#8217; in a concept early and can the project before it costs the company any more money.</dd>
+
+<dd>Years spent training developers and testers in the way of QA have given them good instincts for spotting &#8216;quality&#8217; and they are not afraid to remove the bug, before it creates more problems. This gives them a reputation as a hard boss, but only from the people they fired.</dd>
+
+<dd>They understand the value of having a holistic view of a product. It gives the impression of micro-managing, but that isn&#8217;t the point. They don&#8217;t want to do the job of their subordinates they are looking for the tell tale signs of a lack of quality. They may not know how to solve the problem, but they will be able to give repeatable steps that lead to the problem and trust that given these instructions the problem can be solved by their team.</dd>
+
+<dd>You sit back and admire your handy work from the hospital you are building in Haiti with the spare time and money you made. </dd>  
+</dl>
+
+
+<p>My experience is that most QA sit firmly in the &#8216;tester&#8217; category and that most companies share the view that a QAs job is to find and record bugs until the queue is empty and that once a QA can be trusted to find the majority of bugs in software, their journey is complete.</p>
+
+<p>Let&#8217;s not continue to make this mistake.</p>
+]]></content>
+  </entry>
+  
+</feed>
