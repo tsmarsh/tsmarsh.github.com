@@ -85,7 +85,7 @@ pinboard_user:
 pinboard_count: 3
 
 # Delicious
-delicious_user: ts.marsh
+delicious_user: tailoredthoughts
 delicious_count: 3
 
 # Disqus Comments
