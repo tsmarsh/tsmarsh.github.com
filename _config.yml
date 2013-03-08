@@ -85,11 +85,11 @@ pinboard_user:
 pinboard_count: 3
 
 # Delicious
-delicious_user: tailoredthoughts
+delicious_user: ts.marsh
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name: tsmarsh
+disqus_short_name: tailoredshapes
 disqus_show_comment_count: true
 
 # Google Analytics
