@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Development, - Tailored Shapes</title>
+  <title>Can we avoid problems like this? - Tailored Shapes</title>
   <meta name="author" content="Tom Marsh">
 
   
-  <meta name="description" content="Category: Development,">
+  <meta name="description" content="Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://tsmarsh.github.comblog/categories/development-/">
+  <link rel="canonical" href="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -75,50 +75,134 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Development,</h1>
+    
+      <h1 class="entry-title">Can We Avoid Problems Like This?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T14:35:00-04:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business logic and views, but at a cost: events go in, and if they don&#8217;t come out in the way you expected you are screwed.</p>
 
-  
-  <h2>2012</h2>
+<p>There are a couple of neat tricks I&#8217;ve picked up on the way:</p>
 
-<article>
-  
-<h1><a href="/blog/2012/10/15/game-of-life-kata-in-clojure/">Game of Life Kata in Clojure</a></h1>
-<time datetime="2012-10-15T07:36:00-04:00" pubdate><span class='month'>Oct</span> <span class='day'>15</span> <span class='year'>2012</span></time>
+<pre><code>&lt;p data-bind="text: console.log($data.someStateIWantToPoke)"&gt;&lt;/p&gt;
+</code></pre>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/clojure/'>Clojure</a>, <a class='category' href='/blog/categories/development-/'>Development,</a></span>
-</footer>
+<p>This will always execute and gives you a value to play with in the console.</p>
 
+<p>But, one year into my experience with Knockout it continues to kick me at every given turn.</p>
 
-</article>
+<p>The difference between:</p>
 
+<pre><code>&lt;div id="user-details" data-bind="text: 'user'"&gt;&lt;/div&gt; 
+</code></pre>
 
+<p>and</p>
 
-<article>
-  
-<h1><a href="/blog/2012/10/12/automated-testing/">Automated Testing</a></h1>
-<time datetime="2012-10-12T19:01:00-04:00" pubdate><span class='month'>Oct</span> <span class='day'>12</span> <span class='year'>2012</span></time>
+<pre><code>&lt;div id="user-details" data-bind="text: user"&gt;&lt;/div&gt;
+</code></pre>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/development-/'>Development,</a>, <a class='category' href='/blog/categories/qa-/'>QA,</a>, <a class='category' href='/blog/categories/tdd/'>TDD</a></span>
-</footer>
+<p>is huge semantically, but syntactically they&#8217;re almost identical.</p>
 
+<p>The same goes for:</p>
 
-</article>
+<pre><code>&lt;div id="user-details" data-bind="text: users()"&gt;&lt;/div&gt;
+</code></pre>
 
+<p>which should give you the result of calling the function users or if the variable is an observable, will give you its current value and an error if users is not a function or observable.</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>whose output will be the value of an observable, the value of a variable and weird error if users is a function.</p>
+
+<p>There really isn&#8217;t a good way of debugging these kinds of problems and knockout has no idea it is doing anything wrong, the syntax in all of these examples is perfectly valid, it all falls down to programmer error.</p>
+
+<p>But it feels like the frameworks fault.</p>
+
+<p>The flexibility of being able to use both a function and a variable in the same place definitely buys some brevity, but seems to introduce a class of bugs that I don&#8217;t know how to prevent. I can&#8217;t even unit test this code.</p>
+
+<p>I have a feeling it might mean that I can&#8217;t use Knockout anymore. I loose 7-8% of my time to errors like this in Knockout and I&#8217;m not sure what to do about it.</p>
+
+<p>Anyone got any ideas?</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Tom Marsh</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T14:35:00-04:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/" data-via="tsmarsh" data-counturl="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/" title="Previous Post: What do Installers do?">&laquo; What do Installers do?</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -235,7 +319,10 @@
       var disqus_shortname = 'tailoredthoughts';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/';
+        var disqus_url = 'http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

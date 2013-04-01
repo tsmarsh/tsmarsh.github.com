@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Development | Tailored Shapes]]></title>
   <link href="http://tsmarsh.github.com/blog/categories/development/atom.xml" rel="self"/>
   <link href="http://tsmarsh.github.com/"/>
-  <updated>2013-03-08T07:14:10-06:00</updated>
+  <updated>2013-04-01T16:14:45-04:00</updated>
   <id>http://tsmarsh.github.com/</id>
   <author>
     <name><![CDATA[Tom Marsh]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Desk Checking]]></title>
     <link href="http://tsmarsh.github.com/blog/2012/10/10/desk-checking/"/>
-    <updated>2012-10-10T05:38:00-05:00</updated>
+    <updated>2012-10-10T05:38:00-04:00</updated>
     <id>http://tsmarsh.github.com/blog/2012/10/10/desk-checking</id>
     <content type="html"><![CDATA[<p>If there is one practice guaranteed to reduce the number of bugs in a system it is desk checking.</p>
 

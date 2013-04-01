@@ -9,7 +9,7 @@
   <meta name="author" content="Tom Marsh">
 
   
-  <meta name="description" content="How do Apple&#8217;s .pkg installation files work? Today I learned the answer to a couple of questions I didn&#8217;t realize I had: Why are you &hellip;">
+  <meta name="description" content="Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,6 +82,87 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/04/01/can-we-avoid-problems-like-this/">Can We Avoid Problems Like This?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T14:35:00-04:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+        
+         | <a href="/blog/2013/04/01/can-we-avoid-problems-like-this/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business logic and views, but at a cost: events go in, and if they don&#8217;t come out in the way you expected you are screwed.</p>
+
+<p>There are a couple of neat tricks I&#8217;ve picked up on the way:</p>
+
+<pre><code>&lt;p data-bind="text: console.log($data.someStateIWantToPoke)"&gt;&lt;/p&gt;
+</code></pre>
+
+<p>This will always execute and gives you a value to play with in the console.</p>
+
+<p>But, one year into my experience with Knockout it continues to kick me at every given turn.</p>
+
+<p>The difference between:</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: 'user'"&gt;&lt;/div&gt; 
+</code></pre>
+
+<p>and</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: user"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>is huge semantically, but syntactically they&#8217;re almost identical.</p>
+
+<p>The same goes for:</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users()"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>which should give you the result of calling the function users or if the variable is an observable, will give you its current value and an error if users is not a function or observable.</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>whose output will be the value of an observable, the value of a variable and weird error if users is a function.</p>
+
+<p>There really isn&#8217;t a good way of debugging these kinds of problems and knockout has no idea it is doing anything wrong, the syntax in all of these examples is perfectly valid, it all falls down to programmer error.</p>
+
+<p>But it feels like the frameworks fault.</p>
+
+<p>The flexibility of being able to use both a function and a variable in the same place definitely buys some brevity, but seems to introduce a class of bugs that I don&#8217;t know how to prevent. I can&#8217;t even unit test this code.</p>
+
+<p>I have a feeling it might mean that I can&#8217;t use Knockout anymore. I loose 7-8% of my time to errors like this in Knockout and I&#8217;m not sure what to do about it.</p>
+
+<p>Anyone got any ideas?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/">What Do Installers Do?</a></h1>
     
     
@@ -98,7 +179,7 @@
   
 
 
-<time datetime="2013-03-07T21:07:00-06:00" pubdate data-updated="true">Mar 7<span>th</span>, 2013</time>
+<time datetime="2013-03-07T21:07:00-05:00" pubdate data-updated="true">Mar 7<span>th</span>, 2013</time>
         
          | <a href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/#disqus_thread">Comments</a>
         
@@ -147,7 +228,7 @@
   
 
 
-<time datetime="2012-10-17T12:04:00-05:00" pubdate data-updated="true">Oct 17<span>th</span>, 2012</time>
+<time datetime="2012-10-17T12:04:00-04:00" pubdate data-updated="true">Oct 17<span>th</span>, 2012</time>
         
          | <a href="/blog/2012/10/17/working-with-agilistas/#disqus_thread">Comments</a>
         
@@ -190,7 +271,7 @@
   
 
 
-<time datetime="2012-10-15T07:36:00-05:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+<time datetime="2012-10-15T07:36:00-04:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
         
          | <a href="/blog/2012/10/15/game-of-life-kata-in-clojure/#disqus_thread">Comments</a>
         
@@ -272,7 +353,7 @@
   
 
 
-<time datetime="2012-10-12T19:01:00-05:00" pubdate data-updated="true">Oct 12<span>th</span>, 2012</time>
+<time datetime="2012-10-12T19:01:00-04:00" pubdate data-updated="true">Oct 12<span>th</span>, 2012</time>
         
          | <a href="/blog/2012/10/12/automated-testing/#disqus_thread">Comments</a>
         
@@ -344,7 +425,7 @@ This usually meant writing unit tests, but with spring providing you with real o
   
 
 
-<time datetime="2012-10-10T05:38:00-05:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
+<time datetime="2012-10-10T05:38:00-04:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
         
          | <a href="/blog/2012/10/10/desk-checking/#disqus_thread">Comments</a>
         
@@ -403,7 +484,7 @@ This usually meant writing unit tests, but with spring providing you with real o
   
 
 
-<time datetime="2012-10-09T21:13:00-05:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+<time datetime="2012-10-09T21:13:00-04:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
         
          | <a href="/blog/2012/10/09/nurture-your-qa/#disqus_thread">Comments</a>
         
@@ -444,6 +525,10 @@ This usually meant writing unit tests, but with spring providing you with real o
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/04/01/can-we-avoid-problems-like-this/">Can we avoid problems like this?</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/">What do Installers do?</a>
       </li>
     
@@ -457,10 +542,6 @@ This usually meant writing unit tests, but with spring providing you with real o
     
       <li class="post">
         <a href="/blog/2012/10/12/automated-testing/">Automated Testing</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/10/desk-checking/">Desk Checking</a>
       </li>
     
   </ul>

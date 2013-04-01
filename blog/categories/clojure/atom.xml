@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Clojure | Tailored Shapes]]></title>
   <link href="http://tsmarsh.github.com/blog/categories/clojure/atom.xml" rel="self"/>
   <link href="http://tsmarsh.github.com/"/>
-  <updated>2013-03-08T07:14:10-06:00</updated>
+  <updated>2013-04-01T16:14:45-04:00</updated>
   <id>http://tsmarsh.github.com/</id>
   <author>
     <name><![CDATA[Tom Marsh]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Game of Life Kata in Clojure]]></title>
     <link href="http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/"/>
-    <updated>2012-10-15T07:36:00-05:00</updated>
+    <updated>2012-10-15T07:36:00-04:00</updated>
     <id>http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure</id>
     <content type="html"><![CDATA[<p>Being an ex-Guardianista Conway's Game of Life has a special place in my heart. The problem is simple enough that you can express it in 6 or 7 cards and devious enough that two developers rarely come up with the same solution twice. It can be easily test driven and, in Java, the naive approach takes about and hour and a half to complete and usually spans three to five classes.</p>
 
