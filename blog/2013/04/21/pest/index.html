@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Game of Life Kata in Clojure - Tailored Shapes</title>
+  <title>PEST - Tailored Shapes</title>
   <meta name="author" content="Tom Marsh">
 
   
-  <meta name="description" content="Being an ex-Guardianista Conway&#8217;s Game of Life has a special place in my heart. The problem is simple enough that you can express it in 6 or 7 &hellip;">
+  <meta name="description" content="I had a thought. REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/">
+  <link rel="canonical" href="http://tsmarsh.github.com/blog/2013/04/21/pest/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">Game of Life Kata in Clojure</h1>
+      <h1 class="entry-title">PEST</h1>
     
     
       <p class="meta">
@@ -95,7 +95,7 @@
   
 
 
-<time datetime="2012-10-15T07:36:00-04:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+<time datetime="2013-04-21T09:22:00-04:00" pubdate data-updated="true">Apr 21<span>st</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -104,51 +104,129 @@
   </header>
 
 
-<div class="entry-content"><p>Being an ex-Guardianista Conway&#8217;s Game of Life has a special place in my heart. The problem is simple enough that you can express it in 6 or 7 cards and devious enough that two developers rarely come up with the same solution twice. It can be easily test driven and, in Java, the naive approach takes about and hour and a half to complete and usually spans three to five classes.</p>
+<div class="entry-content"><p>I had a thought.</p>
 
-<p>It is a neat problem to put a language through whilst you&#8217;re learning it.</p>
+<p>REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from exactly the same problems as a lot of other technologies once two or more actors want to do change the same piece of data at the same time.</p>
 
-<p>Things I really liked about Clojure:</p>
+<p>It also has legacy problems in terms of support for the more exotic verbs &#8220;PUT&#8221;, &#8220;DELETE&#8221; have wider support, but you can still have problems with legacy browsers and firewalls.</p>
+
+<p>How do we scale massively parallel writes today?</p>
+
+<!-- more -->
+
+
+<p>Persistent data structures.</p>
+
+<p>How do they work?</p>
+
+<p>Trees?</p>
+
+<p>What else represents a tree?</p>
+
+<p>URLS? Hmmmmm.</p>
+
+<p>So what would you get if you put a RESTful interface on top of a persistent tree?</p>
+
+<p>PErsistent State Transfer (PEST)!</p>
+
+<h2>Read</h2>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {}, "history": []}
+</code></pre>
+
+<p>I&#8217;m going to call this the atom. It represents the current state of the object and how to interrogate its history. It is not cachable at all and is the single point of flux.</p>
+
+<h2>CREATE</h2>
+
+<pre><code>POST http://somedomain/someresource.json
+BODY {"key": "value"}
+302 "http://somedomain/someresource/18jsh18s2.json"
+{"key":"value"}
+</code></pre>
+
+<p>You get a cachable response in the form of a 302. The resulting value at /someresource/18jsh18s2.json is permanent and could be cached forever.</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {"key": "value"}, "history": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>This is the response you would get if you interrogated the atom now.</p>
+
+<h2>Update</h2>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {"key": "another value"}
+302 "http://somedomain/someresource/128sj1054.json"
+{"key": "another value"}
+</code></pre>
+
+<p>Pushing to the value gives you a 301. A permanent redirect. Your browser and client should feel free to treat all requests to this end point as meaning that you really meant the newer 128sj1054.json.</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {"key": "another value"}, "history": ["http://somedomain/someresource/128sj1054.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>The atom has been updated, as has its history.</p>
+
+<h2>Delete</h2>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {}
+302 "http://somedomain/someresource/81sh13sga.json"
+{}
+</code></pre>
+
+<p>Deletion just marks the entity as empty. Didn&#8217;t mean to delete? Repost the value at history[1].</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {}, "history": ["http://somedomain/someresource/81sh13sga.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<h2>Conflict</h2>
+
+<p>Posting to a resource already modified by another actor</p>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {"key": "another value"}
+403
+
+GET http://somedomain/someresource.json
+{"head": {"key": "winning value"}, "history": ["http://somedomain/someresource/281s1sk1.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>Now resubmit, and hope for the best!</p>
+
+<p>This has some fun features:</p>
 
 <ul>
-<li><a href="http://example.com/" title="Optional Title">Leiningen</a> : the best build tool I&#8217;ve ever user. Easy to configure. Easy to find help on.</li>
-<li><a href="https://github.com/marick/Midje">Midje</a>: lovely little testing framework that doesn&#8217;t feel like it is getting in your way</li>
-<li>Being able to make my solution parallel simply by making map -> pmap (not that it helped performance)</li>
+<li>Only GET and POST</li>
+<li>Super cache-able. You can push your responses out to the CDN and treat them as static content.</li>
+<li>No transactions, but a clear path for conflict resolution</li>
+<li>I&#8217;ve used psuedo-hashes of the content as their ID. They could be integers, timestamps, salted-hashes.</li>
+<li>I&#8217;ve used JSON, but there is nothing preventing the use of other formats</li>
+<li>Time is now built in to the value in order to represent state.</li>
+<li>Clients can complete their processing on data from their copy of head in complete confidence</li>
 </ul>
 
 
-<p>Things that I learned to like:</p>
+<p>I could foresee using query parameters in the same way REST does. For example:</p>
 
-<ul>
-<li>Immutable objects: I thought I was pretty good at making my methods idempotent in OO code. I was surprised at how much I had to shift my thinking to get it to work for real.</li>
-<li>Functional style: I really though this would be a breeze coming from Ruby / Python / Javascript, but functions without objects are completely different. What really surprised me is that loosing the structure and state embodied in objects actually made the solution feel lighter and me for more powerful.</li>
-<li>REPL: Immutable objects and strict scoping for values complicates the REPL experience. But it is still very nice to have a REPL, vs Java / C#.</li>
-<li>(): They really do melt away.</li>
-</ul>
+<pre><code>GET http://somedomain/someresource.json?start=1
+200
+{"head": {}, "history": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
 
+<p>or history searches</p>
 
-<p>Things that I didn&#8217;t like:</p>
-
-<ul>
-<li>Clojure start-up time: it really is a second more than the usual JVM start up, enough to affect the frequency of running the tests compared to python or ruby.</li>
-<li>Debugging: I tried and failed to use trace and although you get some feed back from the exceptions, it was not as laser guided as Java or C#.</li>
-<li>Learning curve: Learning new languages is fun for me. I&#8217;ve been programming since I was five years old in Logo and Basic. I learned Java and Haskell at University and I&#8217;ve been programming professionally in Java, C#, Python and Ruby for the last 8 years. Clojure was the toughest of all of them. It was like learning to code from scratch all over again.</li>
-<li>Readability: Clojure lends itself to a terse style of programming and I can imagine finding it hard to read my own code in a couple of weeks. Python and Java have it beat.</li>
-<li>IDE Support: Syntax highlighting and paren matching is about as good as it gets. That is plenty though. I&#8217;ve heard good things from Emacs users about Clojure support, but have no experience myself.</li>
-</ul>
-
-
-<p>I&#8217;ve come away from this experience a lot more positively than I expected too. Clojure is a language that has opened my eyes to complete different way of solving problems, and I liked it. There is a maturity in the ecosystem that is sorely missing from C#, Python and Scala in the form of leiningen which is comparable to Bundler and significantly better than Maven.</p>
-
-<p>My biggest concern is that I have no idea how I would sell Clojure on a project. It is hard enough to find developers who can work in Java and C#, and harder still to find Ruby developers. I&#8217;m not sure I could apply the approach that the Guardian does for Scala and hire talented Java developers and then train them in Clojure. I relied far more on my Computer Science degree to get me through the Kata than my Java experience. Scala advantage here is being able to write Scala like Java with closures and type inference. If universities started to teach Lisps with the same passion as they do C style languages this would be less of a problem.</p>
-
-<p>There are some problem spaces where Clojure looks really attractive. Expert systems written using core.logic look very interesting, but they are competing head on with Drools which has a significantly lower cognitive cost of entry even if Clojure definitely has a syntax advantage in that space.</p>
-
-<p>Concurrency is another area where Clojure makes excellent choices but my experience tells me that you really need close to a hundred cores to make concurrency pay because of synchronization costs. If you need concurrency to deal with IO delay then the Disruptor pattern or just an event loop provide much better bang for buck and even languages with global interpreter locks (GIL) like Ruby and Python are more than adequate for that. If you have an embarrassingly parallel computation problem Clojure may get you to a solution faster. Projects like <a href="http://www.kickstarter.com/projects/adapteva/parallella-a-supercomputer-for-everyone">Parallella</a> might also help prove that multi-core is the near future. If you can genuinely out perform a $1000 server with $99 of arm chips with 16 co-processors that is a compelling reason to look at Clojure / Go / Scala.</p>
-
-<p>DSLs are another area where Clojure excels. Macros mean you can re-write the syntax in the language with no runtime penalty. I&#8217;m just not sure that DSLs are compelling on their own and I&#8217;ve seen enough bad DSLs in Ruby to know that they are no panacea.</p>
-
-<p>So that is my view on Clojure. It is a fantastic language that is looking for a solution that can justify its learning curve.</p>
+<pre><code>GET http://somedomain/someresource.json?key=value
+200
+{"results": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
 </div>
 
 
@@ -171,12 +249,12 @@
   
 
 
-<time datetime="2012-10-15T07:36:00-04:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+<time datetime="2013-04-21T09:22:00-04:00" pubdate data-updated="true">Apr 21<span>st</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/clojure/'>Clojure</a>, <a class='category' href='/blog/categories/development-/'>Development,</a>
+    <a class='category' href='/blog/categories/rest-/'>REST,</a>, <a class='category' href='/blog/categories/web/'>web</a>
   
 </span>
 
@@ -185,7 +263,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/" data-via="tsmarsh" data-counturl="http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tsmarsh.github.com/blog/2013/04/21/pest/" data-via="tsmarsh" data-counturl="http://tsmarsh.github.com/blog/2013/04/21/pest/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -198,10 +276,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/10/12/automated-testing/" title="Previous Post: Automated Testing">&laquo; Automated Testing</a>
+        <a class="basic-alignment left" href="/blog/2013/04/01/can-we-avoid-problems-like-this/" title="Previous Post: Can we avoid problems like this?">&laquo; Can we avoid problems like this?</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/10/17/working-with-agilistas/" title="Next Post: Agile engagement anti patterns">Agile engagement anti patterns &raquo;</a>
       
     </p>
   </footer>
@@ -329,8 +405,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/';
-        var disqus_url = 'http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/';
+        var disqus_identifier = 'http://tsmarsh.github.com/blog/2013/04/21/pest/';
+        var disqus_url = 'http://tsmarsh.github.com/blog/2013/04/21/pest/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: KnockoutJS, | Tailored Shapes]]></title>
+  <link href="http://tsmarsh.github.com/blog/categories/knockoutjs-/atom.xml" rel="self"/>
+  <link href="http://tsmarsh.github.com/"/>
+  <updated>2013-04-21T10:25:15-04:00</updated>
+  <id>http://tsmarsh.github.com/</id>
+  <author>
+    <name><![CDATA[Tom Marsh]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Can we avoid problems like this?]]></title>
+    <link href="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/"/>
+    <updated>2013-04-01T14:35:00-04:00</updated>
+    <id>http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this</id>
+    <content type="html"><![CDATA[<p>Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business logic and views, but at a cost: events go in, and if they don't come out in the way you expected you are screwed.</p>
+
+<!-- more -->
+
+
+<p>There are a couple of neat tricks I've picked up on the way:</p>
+
+<pre><code>&lt;p data-bind="text: console.log($data.someStateIWantToPoke)"&gt;&lt;/p&gt;
+</code></pre>
+
+<p>This will always execute and gives you a value to play with in the console.</p>
+
+<p>But, one year into my experience with Knockout it continues to kick me at every given turn.</p>
+
+<p>The difference between:</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: 'user'"&gt;&lt;/div&gt; 
+</code></pre>
+
+<p>and</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: user"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>is huge semantically, but syntactically they're almost identical.</p>
+
+<p>The same goes for:</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users()"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>which should give you the result of calling the function users or if the variable is an observable, will give you its current value and an error if users is not a function or observable.</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>whose output will be the value of an observable, the value of a variable and weird error if users is a function.</p>
+
+<p>There really isn't a good way of debugging these kinds of problems and knockout has no idea it is doing anything wrong, the syntax in all of these examples is perfectly valid, it all falls down to programmer error.</p>
+
+<p>But it feels like the frameworks fault.</p>
+
+<p>The flexibility of being able to use both a function and a variable in the same place definitely buys some brevity, but seems to introduce a class of bugs that I don't know how to prevent. I can't even unit test this code.</p>
+
+<p>I have a feeling it might mean that I can't use Knockout anymore. I loose 7-8% of my time to errors like this in Knockout and I'm not sure what to do about it.</p>
+
+<p>Anyone got any ideas?</p>
+]]></content>
+  </entry>
+  
+</feed>

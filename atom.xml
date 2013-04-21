@@ -4,7 +4,7 @@
   <title><![CDATA[Tailored Shapes]]></title>
   <link href="http://tsmarsh.github.com/atom.xml" rel="self"/>
   <link href="http://tsmarsh.github.com/"/>
-  <updated>2013-04-01T16:14:45-04:00</updated>
+  <updated>2013-04-21T10:25:15-04:00</updated>
   <id>http://tsmarsh.github.com/</id>
   <author>
     <name><![CDATA[Tom Marsh]]></name>
@@ -14,11 +14,145 @@
 
   
   <entry>
+    <title type="html"><![CDATA[PEST]]></title>
+    <link href="http://tsmarsh.github.com/blog/2013/04/21/pest/"/>
+    <updated>2013-04-21T09:22:00-04:00</updated>
+    <id>http://tsmarsh.github.com/blog/2013/04/21/pest</id>
+    <content type="html"><![CDATA[<p>I had a thought.</p>
+
+<p>REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from exactly the same problems as a lot of other technologies once two or more actors want to do change the same piece of data at the same time.</p>
+
+<p>It also has legacy problems in terms of support for the more exotic verbs &#8220;PUT&#8221;, &#8220;DELETE&#8221; have wider support, but you can still have problems with legacy browsers and firewalls.</p>
+
+<p>How do we scale massively parallel writes today?</p>
+
+<!-- more -->
+
+
+<p>Persistent data structures.</p>
+
+<p>How do they work?</p>
+
+<p>Trees?</p>
+
+<p>What else represents a tree?</p>
+
+<p>URLS? Hmmmmm.</p>
+
+<p>So what would you get if you put a RESTful interface on top of a persistent tree?</p>
+
+<p>PErsistent State Transfer (PEST)!</p>
+
+<h2>Read</h2>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {}, "history": []}
+</code></pre>
+
+<p>I&#8217;m going to call this the atom. It represents the current state of the object and how to interrogate its history. It is not cachable at all and is the single point of flux.</p>
+
+<h2>CREATE</h2>
+
+<pre><code>POST http://somedomain/someresource.json
+BODY {"key": "value"}
+302 "http://somedomain/someresource/18jsh18s2.json"
+{"key":"value"}
+</code></pre>
+
+<p>You get a cachable response in the form of a 302. The resulting value at /someresource/18jsh18s2.json is permanent and could be cached forever.</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {"key": "value"}, "history": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>This is the response you would get if you interrogated the atom now.</p>
+
+<h2>Update</h2>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {"key": "another value"}
+302 "http://somedomain/someresource/128sj1054.json"
+{"key": "another value"}
+</code></pre>
+
+<p>Pushing to the value gives you a 301. A permanent redirect. Your browser and client should feel free to treat all requests to this end point as meaning that you really meant the newer 128sj1054.json.</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {"key": "another value"}, "history": ["http://somedomain/someresource/128sj1054.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>The atom has been updated, as has its history.</p>
+
+<h2>Delete</h2>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {}
+302 "http://somedomain/someresource/81sh13sga.json"
+{}
+</code></pre>
+
+<p>Deletion just marks the entity as empty. Didn&#8217;t mean to delete? Repost the value at history[1].</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {}, "history": ["http://somedomain/someresource/81sh13sga.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<h2>Conflict</h2>
+
+<p>Posting to a resource already modified by another actor</p>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {"key": "another value"}
+403
+
+GET http://somedomain/someresource.json
+{"head": {"key": "winning value"}, "history": ["http://somedomain/someresource/281s1sk1.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>Now resubmit, and hope for the best!</p>
+
+<p>This has some fun features:</p>
+
+<ul>
+<li>Only GET and POST</li>
+<li>Super cache-able. You can push your responses out to the CDN and treat them as static content.</li>
+<li>No transactions, but a clear path for conflict resolution</li>
+<li>I&#8217;ve used psuedo-hashes of the content as their ID. They could be integers, timestamps, salted-hashes.</li>
+<li>I&#8217;ve used JSON, but there is nothing preventing the use of other formats</li>
+<li>Time is now built in to the value in order to represent state.</li>
+<li>Clients can complete their processing on data from their copy of head in complete confidence</li>
+</ul>
+
+
+<p>I could foresee using query parameters in the same way REST does. For example:</p>
+
+<pre><code>GET http://somedomain/someresource.json?start=1
+200
+{"head": {}, "history": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>or history searches</p>
+
+<pre><code>GET http://somedomain/someresource.json?key=value
+200
+{"results": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Can we avoid problems like this?]]></title>
     <link href="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/"/>
     <updated>2013-04-01T14:35:00-04:00</updated>
     <id>http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this</id>
     <content type="html"><![CDATA[<p>Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business logic and views, but at a cost: events go in, and if they don&#8217;t come out in the way you expected you are screwed.</p>
+
+<!-- more -->
+
 
 <p>There are a couple of neat tricks I&#8217;ve picked up on the way:</p>
 
