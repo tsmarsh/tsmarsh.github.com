@@ -109,11 +109,11 @@
 
   <div class="entry-content"><p>I had a thought.</p>
 
-<p>REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from exactly the same problems as a lot of other technologies once two or more actors want to do change the same piece of data at the same time.</p>
+<p>REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from exactly the same problems as a lot of other technologies once two or more actors want to do change the same piece of data at the same time. There are no transactions and there are no clues as to what the client thought the data was when they changed it. What are you supposed to do?</p>
 
 <p>It also has legacy problems in terms of support for the more exotic verbs &#8220;PUT&#8221;, &#8220;DELETE&#8221; have wider support, but you can still have problems with legacy browsers and firewalls.</p>
 
-<p>How do we scale massively parallel writes today?</p>
+<p>This left me asking myself some questions.</p>
 
 </div>
   
