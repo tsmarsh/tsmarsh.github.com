@@ -6,20 +6,24 @@ comments: true
 categories:
 ---
 
-I took some time earlier this year to write the first [PESTful](http://tailoredshapes.com/blog/2013/04/21/pest/) service. This project was weird for me, predominantly because I finished it. Here are a few stats that I think are interesting about this:
+I took some time earlier this year to write the first [PESTful](http://tailoredshapes.com/blog/2013/04/21/pest/) service: [Inventory Server](https://bitbucket.org/tsmarsh/inventoryserver). This project was weird for me, predominantly because I finished it. 
 
-| Stat                            | Value |
-|---------------------------------|-------|
-| Lines of Code                   | 7000  |
-| Number of Days                  |  75   |
-| Number of commits               | 140   |
-| Total number of lines commited  | 19000 |
-| Average hours per Day           | 2     |
-| Number of developers            | 1     |
-| Unit tests                      | 50    |
-| Class coverage                  | 99%   |
-| Method coverage                 | 96%   |
-| Line coverage                   | 95%   |
+<!-- more -->
+
+Here are a few stats that I think are interesting about this:
+
+Stat                            | Value
+:------------------------------ | -----:
+Lines of Code                   | 7000 
+Number of Days                  |  75  
+Number of commits               | 140  
+Total number of lines commited  | 19000
+Average hours per Day           | 2    
+Number of developers            | 1    
+Unit tests                      | 50   
+Class coverage                  | 99%  
+Method coverage                 | 96%  
+Line coverage                   | 95%  
 
 7000 lines of code is a pretty decent sized project, most of that was figuring out a strategy to allow an RDBMS to act like a [persistant data structure](http://en.wikipedia.org/wiki/Persistent_data_structure) and the layers of abstraction required to make it as generic as I could make it.
 

@@ -7,6 +7,8 @@ categories:
 ---
 Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business logic and views, but at a cost: events go in, and if they don't come out in the way you expected you are screwed. 
 
+<!-- more -->
+
 There are a couple of neat tricks I've picked up on the way:
 
 	<p data-bind="text: console.log($data.someStateIWantToPoke)"></p>
