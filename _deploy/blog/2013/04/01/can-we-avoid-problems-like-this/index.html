@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Can we avoid problems like this? - Tailored Shapes</title>
+  <meta name="author" content="Tom Marsh">
+
+  
+  <meta name="description" content="Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Tailored Shapes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-7393476-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Tailored Shapes</a></h1>
+  
+    <h2>Putting words to shapes</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tsmarsh.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Can We Avoid Problems Like This?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T14:35:00-04:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Knockout is currently my favourite way of using ECMAScript at large. It essentially allows you to outsource event management and focus on business logic and views, but at a cost: events go in, and if they don&#8217;t come out in the way you expected you are screwed.</p>
+
+<!-- more -->
+
+
+<p>There are a couple of neat tricks I&#8217;ve picked up on the way:</p>
+
+<pre><code>&lt;p data-bind="text: console.log($data.someStateIWantToPoke)"&gt;&lt;/p&gt;
+</code></pre>
+
+<p>This will always execute and gives you a value to play with in the console.</p>
+
+<p>But, one year into my experience with Knockout it continues to kick me at every given turn.</p>
+
+<p>The difference between:</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: 'user'"&gt;&lt;/div&gt; 
+</code></pre>
+
+<p>and</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: user"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>is huge semantically, but syntactically they&#8217;re almost identical.</p>
+
+<p>The same goes for:</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users()"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>which should give you the result of calling the function users or if the variable is an observable, will give you its current value and an error if users is not a function or observable.</p>
+
+<pre><code>&lt;div id="user-details" data-bind="text: users"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>whose output will be the value of an observable, the value of a variable and weird error if users is a function.</p>
+
+<p>There really isn&#8217;t a good way of debugging these kinds of problems and knockout has no idea it is doing anything wrong, the syntax in all of these examples is perfectly valid, it all falls down to programmer error.</p>
+
+<p>But it feels like the frameworks fault.</p>
+
+<p>The flexibility of being able to use both a function and a variable in the same place definitely buys some brevity, but seems to introduce a class of bugs that I don&#8217;t know how to prevent. I can&#8217;t even unit test this code.</p>
+
+<p>I have a feeling it might mean that I can&#8217;t use Knockout anymore. I loose 7-8% of my time to errors like this in Knockout and I&#8217;m not sure what to do about it.</p>
+
+<p>Anyone got any ideas?</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Tom Marsh</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T14:35:00-04:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/" data-via="tsmarsh" data-counturl="http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/" title="Previous Post: What do Installers do?">&laquo; What do Installers do?</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/04/21/pest/" title="Next Post: Pest">Pest &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/06/25/a-pet-pest-project/">Breaking down the 10x developer myth</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/21/pest/">Pest</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/01/can-we-avoid-problems-like-this/">Can we avoid problems like this?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/">What do Installers do?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/17/working-with-agilistas/">Agile engagement anti patterns</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/tsmarsh">@tsmarsh</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'tsmarsh',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("tsmarsh", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/tsmarsh" class="twitter-follow-button" data-show-count="false">Follow @tsmarsh</a>
+  
+</section>
+
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/ts.marsh?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/ts.marsh">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/tsmarsh?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Tom Marsh -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'tailoredthoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/';
+        var disqus_url = 'http://tsmarsh.github.com/blog/2013/04/01/can-we-avoid-problems-like-this/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

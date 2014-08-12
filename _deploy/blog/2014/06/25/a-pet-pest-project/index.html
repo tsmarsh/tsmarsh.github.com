@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Breaking down the 10x developer myth - Tailored Shapes</title>
+  <meta name="author" content="Tom Marsh">
+
+  
+  <meta name="description" content="I took some time earlier this year to write the first PESTful service: Inventory Server. This project was weird for me, predominantly because I &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tsmarsh.github.com/blog/2014/06/25/a-pet-pest-project/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Tailored Shapes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-7393476-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Tailored Shapes</a></h1>
+  
+    <h2>Putting words to shapes</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tsmarsh.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Breaking Down the 10x Developer Myth</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-25T19:33:00-04:00" pubdate data-updated="true">Jun 25<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I took some time earlier this year to write the first <a href="http://tailoredshapes.com/blog/2013/04/21/pest/">PESTful</a> service: <a href="https://bitbucket.org/tsmarsh/inventoryserver">Inventory Server</a>. This project was weird for me, predominantly because I finished it.</p>
+
+<!-- more -->
+
+
+<p>Here are a few stats that I think are interesting about this:</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Stat                            </th>
+<th align="right"> Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Lines of Code                   </td>
+<td align="right"> 7000 </td>
+</tr>
+<tr>
+<td align="left">Number of Days                  </td>
+<td align="right">  75  </td>
+</tr>
+<tr>
+<td align="left">Number of commits               </td>
+<td align="right"> 140  </td>
+</tr>
+<tr>
+<td align="left">Total number of lines commited  </td>
+<td align="right"> 19000</td>
+</tr>
+<tr>
+<td align="left">Average hours per Day           </td>
+<td align="right"> 2    </td>
+</tr>
+<tr>
+<td align="left">Number of developers            </td>
+<td align="right"> 1    </td>
+</tr>
+<tr>
+<td align="left">Unit tests                      </td>
+<td align="right"> 50   </td>
+</tr>
+<tr>
+<td align="left">Class coverage                  </td>
+<td align="right"> 99%  </td>
+</tr>
+<tr>
+<td align="left">Method coverage                 </td>
+<td align="right"> 96%  </td>
+</tr>
+<tr>
+<td align="left">Line coverage                   </td>
+<td align="right"> 95%  </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>7000 lines of code is a pretty decent sized project, most of that was figuring out a strategy to allow an RDBMS to act like a <a href="http://en.wikipedia.org/wiki/Persistent_data_structure">persistant data structure</a> and the layers of abstraction required to make it as generic as I could make it.</p>
+
+<p>What is interesting to me is that I shouldn&#8217;t be able to complete a 7000 line project as a solo developer. The <a href="http://en.wikipedia.org/wiki/The_Mythical_Man-Month">Mythical Man Month</a> tells me that I should be grateful if I can get 10 lines a day out of an average developer. My industrial experience tells me that is probably close to the truth. That means it should take ~5 man years to complete. As is, I got it done in a little over 3.5 months (20 days per month), at 2 hours a day, 5 days a week.</p>
+
+<p>Lets do some stupid math, to bump my ego, before I tear it to pieces.</p>
+
+<pre><code>lines_of_code_per_day = 7000 / 75
+&gt;&gt; 93
+# w00t I'm a 9.3x developer!
+
+# except I only worked 2 hours a day
+work_day_adjustment = 8/2
+actual_work_days = 75 * work_day_adjustment 
+&gt;&gt; 19
+lines_of_code_per_day = 7000 / actual_work_days
+&gt;&gt; 368
+# w00t woo I'm a 36.8x developer
+
+#But I actually commited 19k lines
+lines_of_code_per_day = 19000 / actual_work_days
+&gt;&gt; 1000
+# AMAZEBALLZ l337s it hurtz
+</code></pre>
+
+<p>This is clearly bullshit. I&#8217;m good. I work hard. I spend a lot of personal time working on my trade, but I am not 9 times more effective than my peers, never mind 100 times. That is clearly ridiculous.</p>
+
+<h2>So what happend?</h2>
+
+<h3>Did I use some super terse language to enhance my productivity?</h3>
+
+<p>No. I used <a href="http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html">Java 8</a>, with most of the development done in Java 7 as <a href="http://www.eclipse.org/jetty/">Jetty</a> has an issue with Java 8 annotations, until I figured it out. Whilst Java is definiely terse compared to COBOL, its still quite verbose. That said I did use IntelliJ. Which means that many of the lines of code I &#8216;wrote&#8217;, were really IntelliJ refactoring huge swathes of my code base.</p>
+
+<p>But that is interesting in itself. I chose a language which I knew had the worlds best refactoring tooling, and it worked, renames, signature changes, pull-ups were all handled automatically. IntelliJ also had the nerve to show me potential bugs via static analysis and fix them!</p>
+
+<p>I also did the unthinkable and used <a href="http://maven.apache.org/">Maven</a>, at least I created a pom. Unit Tests were still run via IntelliJ, Maven just meant that I didn&#8217;t have to configure my IDE for silly things like resources or test locations. The real benefit was that I already know Maven and its limitations. So almost no time was spent trying to bend it to my will.</p>
+
+<p>I used technologies I was somewhat familiar with. I used Hibernate instead of&#8230; you know, I have no idea. Seriously, what other ORM technology gets out of the way so quickly, whilst providing you with a scalable NoSQL layer if you want it? I used Guice instead of Spring because&#8230; fuck Spring. Also, all I wanted was a DI container. The real choice was between Guice or Pico, I just knew a little more Guice, also fuck Spring.</p>
+
+<p>You would have thought that would have reduced the learing curve&#8230; and it did, but there were still many things that I learned on this project:</p>
+
+<ul>
+<li>How Hibernate handles objects when the primary key changes on update (not very well, you have to clone, but not too deep, otherwise bad things happen)</li>
+<li>That Guice is great, but it is much happier when you do things its way, rather than your own. It forced:
+
+<ul>
+<li>A switch to Servlets from HTTPServer</li>
+<li>A switch to JPA from pure Hibernate. (both of these changes turned out to be excellent)</li>
+</ul>
+</li>
+<li>How Guice handles Robot Legs, which I just assumed all DI containers did, turns out its hard and I got lucky picking Guice because its solution was closest to my assumptions.</li>
+</ul>
+
+
+<p>So even on a project where I had complete control I still &#8216;lost&#8217; time learning how other peoples code worked.</p>
+
+<p>The crazy thing is that this is where most of the time really went.</p>
+
+<p>Sure, I only spent 2 hours infront of a computer, but I was thinking about these problems constantly. Not every waking moment, constantly. I would hit a problem on my commute. Close my laptop, complete a full day of work, and unconsciously solve the problem. The same thing happened during sleep.</p>
+
+<p>I also spent 0 hours in meetings and no time explaining my design with other developers. This actually really worries me as I&#8217;m not sure if my design is good. The only validation I have is my own and that of my tests.</p>
+
+<p>So lets look at the stats again:</p>
+
+<pre><code>lines_of_code_per_day = 7000 / 75
+&gt;&gt; 93
+# w00t I'm a 9.3x developer!
+
+# except I thought about this every moment
+work_day_adjustment = 24 / 8
+actual_work_days = 75 * work_day_adjustment 
+&gt;&gt; 300
+lines_of_code_per_day = 7000 / actual_work_days
+&gt;&gt; 23
+# I'm a 2x developler
+
+#But I actually commited 19k lines
+lines_of_code_per_day = 19000 / actual_work_days
+&gt;&gt; 64
+# Meh, I'm ok
+</code></pre>
+
+<p>That&#8217;s still a 6x developer. What do I attribute that too?</p>
+
+<h3>SOLID Design Principles</h3>
+
+<p>This is the first project where I tried as hard as I could to be as SOLID as possible. I have 100s of tiny classes that do one thing and one thing well. I found this to be a mixed bag experience. I never hit a wall, I didn&#8217;t build a giant ball of mud, but almost every check-in affected multiple files.</p>
+
+<p>This is fine in a single developer world, but if I had been working in a team it would would have been merge hell from day one. Most of the reason for this was merciless refactoring of interfaces caused by doing that simplest thing that would work followed by the right thing: red - green - refactor, splitting green and refactor into seperate commits.</p>
+
+<p>This is fine. I also probably wasn&#8217;t SOLID enough. I didn&#8217;t create abstractions around my interactions with libraries, partly because I&#8217;m not sure how I would with regards to DI and JPA. But I&#8217;m not sure I would have been faster in a team. Once I had a design in my head, the time to execute that design was definitely faster than the time it would have taken to explain my desing and then evaluate my co-workers implementation.</p>
+
+<h3>Solo Working</h3>
+
+<p>I was the customer, architect, dba, software developer, developer in test and release engineer on this project. I am happy to report that we were all on the same page from day one. The customer understood when we went over the the original 4 week estimate. Release engineering got in early and created a vagrant environment which really helped. When it was realized that the project was larger than originially estimated the developer in test stepped in and wrote tests, then we worked together on TDD for the remaineder of the project.</p>
+
+<p>I could do this because of a decade of experience working with some of best developers in the world (thank you, <a href="http://www.thoughtworks.com">ThoughtWorks</a>) who were kind enough to besto on me a fraction of their talent. But this wasn&#8217;t the optimal team configuration.</p>
+
+<p>If I could change one thing about my team it would have been the introduction of a pair. One constant meeting is so much better than 20% of your time in break-out spaces. I can&#8217;t fall back in to <a href="http://en.wikipedia.org/wiki/Flow_(psychology">flow</a>) at the drop of a hat. Even 15 minute meetings can cost me hours of productivity.</p>
+
+<p>I suspect if I was pairing I would have more unit tests from the start and that my overall design would have been better. At the very least we would know that our code was readable by at least one other human.</p>
+
+<h3>Automatic Testing</h3>
+
+<p>I started the project knowing that I wanted automatic acceptance testing, I wasn&#8217;t sure I wanted unit tests.</p>
+
+<p>I think I hit a good balance with this project. The automatic acceptence testing was great. Fast tests that hit the API directly and exercised the full stack caught the majority of my bugs. Eventually I introduced more unit tests that helped me work out my design at a micro level. For the first half of the project I was happy with 85% coverage, but as I kept introducing more unit tests and getting closer to 100% I kept finding more really gnarly bugs in the edge cases.</p>
+
+<p>Introducing fast, acceptance tests and then back filling with unit tests for edge cases, design and documentation is now my prefered system for automated testing. I distinguish this from BDD because my acceptance tests were mostly happy path and large, not one test per story. My entire suite (unit and acceptance) runs in 8 seconds, this meant I ran it habitually at almost every save point, not every commit.</p>
+
+<h4>Dependencies</h4>
+
+<p>I started mocking dependencies, but pulled out quickly. As soon as I introduced <a href="https://code.google.com/p/mockito/">Mockito</a> my test times rocketed (10-100x slower). As I was using Java, top-down design was pretty much demanded, so I needed something to test with, so I used stubs. I then replaced those with test objects when I had a couple of tests that used similar stubs, then ultimately with dependency injected (DI) controlled objects.</p>
+
+<p>That final migration to DI controlled objects was new for me. I&#8217;d always been told that unit tests should just test the object under test. That is definitely true, but unit tests are also the least interesting of all the tests. I am plagued by many years of writing unit tests that are green because of a poorly understood mock/stub/test object not because they actually work. It is fair to say that using DI means that you are only testing a single configuration, well, thats only true if you have a single test configuration.</p>
+
+<p>I used one configuration for my &#8216;unit&#8217; tests, then three configurations for my integration tests: in memory; JPA; cassandra (which was eventually aborted). The all caught different flavour of bugs.</p>
+
+<p>The greatest reason for adopting DI Controlled Objects was pragmatism. As the project matured and there became a greater shift towards refactoring rather than feature addition, it was the tests that didn&#8217;t use DI that had to be changed the most.</p>
+
+<p>Testing dependencies is a cross cutting concern for unit tests. It makes sense to me that it should therefor be handled in a cross-cutting way, much like DI.</p>
+
+<h4>Multiple Backends</h4>
+
+<p>For some crazy reason I got it into my head that the best way to make sure that my design was flexible was to implement two back-ends from the start: in-memory and rdbms. This was a stroke of genious that I plan on replicating on other projects. I could get something working really quickly in memory, test out the core logic, then port to JPA where all I had to worry about were issues configuring JPA and transactions, not business logic.</p>
+
+<p>It wasn&#8217;t perfect. But it was really cool having my &#8216;integration&#8217; tests work with multiple backends without issue. I really don&#8217;t know if this made me go faster. There were times when I was asking myself, &#8220;What is the point of maintaining the memory backend&#8221;, then it would catch a bug that the other configuration didn&#8217;t.</p>
+
+<h2>Conclusions</h2>
+
+<p>This project was a lot of fun. Doing a project for the sake of doing the project not because I wanted to learn a new langauge / framework, meant that I finished the project when it was feature complete, not when I had finished evaluating the new technology.</p>
+
+<p>Revisiting the practices that I sell: SOLID, automated testing, DevOps was my biggest take-away. These practices work really well for me. Whenever I deviated from them I started to see the problems I see in my clients.</p>
+
+<p>Java is still a great tool, especially when used in combination with IntelliJ. It has its faults. I spent alot of time working with edge cases in generics (var args and generics do not get along), there was a lot of boiler plate, but I don&#8217;t feel like it ever really slowed me down. I&#8217;ll take tooling over verbosity any day of the week.</p>
+
+<p>2 hours of coding a day is plenty. I don&#8217;t have to be on task and focused for 8 hours a day in order to be more productive than a team of developers. Size is the enemy. Most dev shops would have made this a 4 dev project, with a qa and pm, and quoted 3 months. The overhead in maintaining that team, might be the majority of the time on that project. All that is really needed is one dev, and a flexible client who understands that coding isn&#8217;t about sitting in front of a computer for 12 hours a day.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Tom Marsh</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-25T19:33:00-04:00" pubdate data-updated="true">Jun 25<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tsmarsh.github.com/blog/2014/06/25/a-pet-pest-project/" data-via="tsmarsh" data-counturl="http://tsmarsh.github.com/blog/2014/06/25/a-pet-pest-project/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/21/pest/" title="Previous Post: Pest">&laquo; Pest</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/06/25/a-pet-pest-project/">Breaking down the 10x developer myth</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/21/pest/">Pest</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/01/can-we-avoid-problems-like-this/">Can we avoid problems like this?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/">What do Installers do?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/17/working-with-agilistas/">Agile engagement anti patterns</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/tsmarsh">@tsmarsh</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'tsmarsh',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("tsmarsh", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/tsmarsh" class="twitter-follow-button" data-show-count="false">Follow @tsmarsh</a>
+  
+</section>
+
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/ts.marsh?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/ts.marsh">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/tsmarsh?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Tom Marsh -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'tailoredthoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://tsmarsh.github.com/blog/2014/06/25/a-pet-pest-project/';
+        var disqus_url = 'http://tsmarsh.github.com/blog/2014/06/25/a-pet-pest-project/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

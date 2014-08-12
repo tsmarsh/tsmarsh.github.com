@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Development, | Tailored Shapes]]></title>
+  <link href="http://tsmarsh.github.com/blog/categories/development-/atom.xml" rel="self"/>
+  <link href="http://tsmarsh.github.com/"/>
+  <updated>2014-08-12T11:44:18-04:00</updated>
+  <id>http://tsmarsh.github.com/</id>
+  <author>
+    <name><![CDATA[Tom Marsh]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Game of Life Kata in Clojure]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure/"/>
+    <updated>2012-10-15T07:36:00-04:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/15/game-of-life-kata-in-clojure</id>
+    <content type="html"><![CDATA[<p>Being an ex-Guardianista Conway's Game of Life has a special place in my heart. The problem is simple enough that you can express it in 6 or 7 cards and devious enough that two developers rarely come up with the same solution twice. It can be easily test driven and, in Java, the naive approach takes about and hour and a half to complete and usually spans three to five classes.</p>
+
+<p>It is a neat problem to put a language through whilst you're learning it.</p>
+
+<p>Things I really liked about Clojure:</p>
+
+<ul>
+<li><a href="http://example.com/" title="Optional Title">Leiningen</a> : the best build tool I've ever user. Easy to configure. Easy to find help on.</li>
+<li><a href="https://github.com/marick/Midje">Midje</a>: lovely little testing framework that doesn't feel like it is getting in your way</li>
+<li>Being able to make my solution parallel simply by making map -> pmap (not that it helped performance)</li>
+</ul>
+
+
+<p>Things that I learned to like:</p>
+
+<ul>
+<li>Immutable objects: I thought I was pretty good at making my methods idempotent in OO code. I was surprised at how much I had to shift my thinking to get it to work for real.</li>
+<li>Functional style: I really though this would be a breeze coming from Ruby / Python / Javascript, but functions without objects are completely different. What really surprised me is that loosing the structure and state embodied in objects actually made the solution feel lighter and me for more powerful.</li>
+<li>REPL: Immutable objects and strict scoping for values complicates the REPL experience. But it is still very nice to have a REPL, vs Java / C#.</li>
+<li>(): They really do melt away.</li>
+</ul>
+
+
+<p>Things that I didn't like:</p>
+
+<ul>
+<li>Clojure start-up time: it really is a second more than the usual JVM start up, enough to affect the frequency of running the tests compared to python or ruby.</li>
+<li>Debugging: I tried and failed to use trace and although you get some feed back from the exceptions, it was not as laser guided as Java or C#.</li>
+<li>Learning curve: Learning new languages is fun for me. I've been programming since I was five years old in Logo and Basic. I learned Java and Haskell at University and I've been programming professionally in Java, C#, Python and Ruby for the last 8 years. Clojure was the toughest of all of them. It was like learning to code from scratch all over again.</li>
+<li>Readability: Clojure lends itself to a terse style of programming and I can imagine finding it hard to read my own code in a couple of weeks. Python and Java have it beat.</li>
+<li>IDE Support: Syntax highlighting and paren matching is about as good as it gets. That is plenty though. I've heard good things from Emacs users about Clojure support, but have no experience myself.</li>
+</ul>
+
+
+<p>I've come away from this experience a lot more positively than I expected too. Clojure is a language that has opened my eyes to complete different way of solving problems, and I liked it. There is a maturity in the ecosystem that is sorely missing from C#, Python and Scala in the form of leiningen which is comparable to Bundler and significantly better than Maven.</p>
+
+<p>My biggest concern is that I have no idea how I would sell Clojure on a project. It is hard enough to find developers who can work in Java and C#, and harder still to find Ruby developers. I'm not sure I could apply the approach that the Guardian does for Scala and hire talented Java developers and then train them in Clojure. I relied far more on my Computer Science degree to get me through the Kata than my Java experience. Scala advantage here is being able to write Scala like Java with closures and type inference. If universities started to teach Lisps with the same passion as they do C style languages this would be less of a problem.</p>
+
+<p>There are some problem spaces where Clojure looks really attractive. Expert systems written using core.logic look very interesting, but they are competing head on with Drools which has a significantly lower cognitive cost of entry even if Clojure definitely has a syntax advantage in that space.</p>
+
+<p>Concurrency is another area where Clojure makes excellent choices but my experience tells me that you really need close to a hundred cores to make concurrency pay because of synchronization costs. If you need concurrency to deal with IO delay then the Disruptor pattern or just an event loop provide much better bang for buck and even languages with global interpreter locks (GIL) like Ruby and Python are more than adequate for that. If you have an embarrassingly parallel computation problem Clojure may get you to a solution faster. Projects like <a href="http://www.kickstarter.com/projects/adapteva/parallella-a-supercomputer-for-everyone">Parallella</a> might also help prove that multi-core is the near future. If you can genuinely out perform a $1000 server with $99 of arm chips with 16 co-processors that is a compelling reason to look at Clojure / Go / Scala.</p>
+
+<p>DSLs are another area where Clojure excels. Macros mean you can re-write the syntax in the language with no runtime penalty. I'm just not sure that DSLs are compelling on their own and I've seen enough bad DSLs in Ruby to know that they are no panacea.</p>
+
+<p>So that is my view on Clojure. It is a fantastic language that is looking for a solution that can justify its learning curve.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Automated Testing]]></title>
+    <link href="http://tsmarsh.github.com/blog/2012/10/12/automated-testing/"/>
+    <updated>2012-10-12T19:01:00-04:00</updated>
+    <id>http://tsmarsh.github.com/blog/2012/10/12/automated-testing</id>
+    <content type="html"><![CDATA[<p>I was introduced to Unit Testing back in 2007 on my first agile gig. At that point
+Unit tests were defined to me as 'tests that proved individual units of code'. Database connections were a smell, but not forbidden; mocks, stubs were actively encouraged. The closer we got to 100% coverage the better, but we did at least have the sense to not test the language, so no constructor or property testing.</p>
+
+<p>Functional tests were then defined to me as 'tests the prove that individual units work together'.
+This usually meant writing unit tests, but with spring providing you with real objects rather than mocks and it was generally accepted that a real database / service would be used. This was often an after thought, as we already had close to 100% unit coverage. There purpose was to catch bugs that only occurred in the interaction of objects that would otherwise have only been tested in isolation. The functional suite was a little light, predominantly because it was never really clear if functional tests were really just unit tests.</p>
+
+<p>Integration tests were then described as 'proving that the whole thing works together', and were originally HTTPUnit tests, until we 'advanced' towards selenium. They were slow and unreliable. The build would break for environmental reasons so often that it was a surprise when they broke for real.</p>
+
+<p>Despite this I was sold, at least I was sold on Unit testing. It just made my code better and gave me a way of thinking about the problem before I thought about the solution, but there were a few problems.</p>
+
+<ul>
+<li>Slow tests: Unit tests got slow fast. This boiled down to
+
+<ul>
+<li>Database calls: you can perform 100 unit tests in the time it takes to make one database call</li>
+<li>Over mocking / stubbing: reflection is 10-100 times slower than a normal function call and as test code is only run once the most VMs won't optimize it away.</li>
+</ul>
+</li>
+<li>Writing test code often takes a lot longer than writing the production code.</li>
+<li>Over testing:
+
+<ul>
+<li>having to change tests in the unit, functional and integration tests</li>
+<li>having to change five unit tests for one change.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Five years on and my styles have changed. This is how I see automated testing now.</p>
+
+<!-- more -->
+
+
+<p>Source control describes the 'who', 'when' and 'why'. This works better the smaller the commit. If you can link your commit to bug / story tracking software all the better. Blame should allow you figure out why a piece of code looks the way it does.</p>
+
+<p><em>Functional tests describe the 'what'.</em></p>
+
+<p>They are the first tests that you write, and describe the API. A measure of a good functional test is that it doesn't change when you re-factor your code. They should only change when you enhance your code by adding or removing functionality. Real objects should be used whenever possible, but calls to databases and services should be avoided. Mocking and stubbing of external libraries, services and databases is encouraged only if they make the test faster and more reliable. These tests should be really, really fast.</p>
+
+<p>This concept is stolen directly from the work of Dan North and Behavioral Driven Design although I have more frequently seen that applied to integration tests rather than functional tests and that almost never works.</p>
+
+<p><em>Unit tests describe the 'how'.</em></p>
+
+<p>The public methods that you are testing via functional tests should be light, with the computation happening in well named protected methods that are called from the public method within reason. These methods need unit testing as they describe 'how' you are implementing your API. Expect to write many unit tests in an effort to get your functional tests to pass.</p>
+
+<p>Unit tests have similar life cycles to the code they test. You should expect a great deal of churn as your code evolves. With each change requiring a change to a unit test. If you can change the code without affecting a unit test you should be asking yourself if you are missing a unit test, or if your unit test was really a functional test.</p>
+
+<p>If you did no other automated testing than this, you would be in really good shape. Follow this plan and you will have a test suite that executes hundreds of tests per second and each of those tests can be run in parallel. You will also have a nicely documented piece of software, with each line of code's purpose explained by a mixture of source control, functional and unit testing.</p>
+
+<p>But you still need to do manual testing. In fact, from this point on, the testing should be orchestrated by someone other than the developer on the story and you will always need manual testing.</p>
+
+<p>Integration tests are where functional tests meet reality. You use a real database, you might even hit real services, provided that you have as much control over those services as you do your database. The application is poked in the same way a user would poke it.</p>
+
+<p>Two things separate my views on integration tests from the integration of old.</p>
+
+<p>Firstly, I believe Selenium is the tool of last resort. If you use functional and unit tests as I've described for both your server and client side logic you already have a pretty comprehensive test suite. All that is left to test is that you get the right data back for the right inputs when everything is wired together. That can be achieved with something as simple as HTTPUnit or even just poking controllers from your XUnit tool. You do loose the ability to click the button or check that a pop-up pops, but you get a test suite that is hundreds of times faster, significantly simpler to maintain and reliable.</p>
+
+<p>Selenium is a miracle of modern engineering, built by some of the most talented and passionate developers in the world, but they are totally beholden to the teams that build browsers who, whilst selenium might be on their priority list, it is towards the bottom. The result is that browser automation tests crash. They crash because browsers don't like being poked by anything other than a human at human speeds. If you absolutely have to test that your pop-up pops every build, automatically, Selenium is the best tool, it just may be more expensive than you realized.</p>
+
+<p>Secondly, I think that they need to be owned by some one who is directly responsible for efficiency of the team, not the functionality / efficiency of the application. Team / Tech / QA leads or the PM are all good candidates, business owners and the development team are not. There needs to be a budget for integration tests and that budget needs to be tracked by the project as a whole. If an integration tests breaks for a legitimate business reason developers first should inform QA that they need to manually test that part of the code now and then deactivate that test.</p>
+
+<p>It is then the responsibility of whomever owns the integration build to get time allocated to fix it.</p>
+
+<p>Making integration tests track-able outside of the normal story cost forces the owners to focus on keeping them as cheap and efficient as possible and stops the anti-pattern of having an 'acceptance' test for each story. The reason for this is that integration tests take minutes to run, and are rarely embarrassingly parallel. Adding minutes to the build has a direct effect on velocity and whilst integration tests can save a significant amount of QA churn, they are not a silver bullet. There needs to be evidence that the integration suite is actually improving velocity before each and every minute is added.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Pest - Tailored Shapes</title>
+  <meta name="author" content="Tom Marsh">
+
+  
+  <meta name="description" content="I had a thought. REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tsmarsh.github.com/blog/2013/04/21/pest/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Tailored Shapes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-7393476-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Tailored Shapes</a></h1>
+  
+    <h2>Putting words to shapes</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tsmarsh.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Pest</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-21T09:22:00-04:00" pubdate data-updated="true">Apr 21<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I had a thought.</p>
+
+<p>REpresentational State Transfer is a very cool concept, especially if you want to build a very read heavy API. But it suffers from exactly the same problems as a lot of other technologies once two or more actors want to do change the same piece of data at the same time. There are no transactions and there are no clues as to what the client thought the data was when they changed it. What are you supposed to do?</p>
+
+<p>It also has legacy problems in terms of support for the more exotic verbs “PUT”, “DELETE” have wider support, but you can still have problems with legacy browsers and firewalls.</p>
+
+<p>This left me asking myself some questions.</p>
+
+<!-- more -->
+
+
+<p><em>How do we scale massively parallel writes from independent actors?</em></p>
+
+<p>Persistent data structures.</p>
+
+<p><em>How do they work?</em></p>
+
+<p>Trees?</p>
+
+<p><em>What else represents a tree?</em></p>
+
+<p>URLS.</p>
+
+<p>Hmmmmm.</p>
+
+<p><em>So what would you get if you put a RESTful interface on top of a persistent tree?</em></p>
+
+<p><strong>PE</strong>rsistent <strong>S</strong>tate <strong>T</strong>ransfer (PEST)!</p>
+
+<h2>Read</h2>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {}, "history": []}
+</code></pre>
+
+<p>I’m going to call this the atom. It represents the current state of the object and how to interrogate its history. It is not cachable at all and is the single point of flux.</p>
+
+<h2>CREATE</h2>
+
+<pre><code>POST http://somedomain/someresource.json
+BODY {"key": "value"}
+302 "http://somedomain/someresource/18jsh18s2.json"
+{"key":"value"}
+</code></pre>
+
+<p>You get a cachable response in the form of a 302. The resulting value at /someresource/18jsh18s2.json is permanent and could be cached forever.</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {"key": "value"}, "history": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>This is the response you would get if you interrogated the atom now.</p>
+
+<h2>Update</h2>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {"key": "another value"}
+302 "http://somedomain/someresource/128sj1054.json"
+{"key": "another value"}
+</code></pre>
+
+<p>Pushing to the value gives you a 301. A permanent redirect. Your browser and client should feel free to treat all requests to this end point as meaning that you really meant the newer 128sj1054.json.</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {"key": "another value"}, "history": ["http://somedomain/someresource/128sj1054.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>The atom has been updated, as has its history.</p>
+
+<h2>Delete</h2>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {}
+302 "http://somedomain/someresource/81sh13sga.json"
+{}
+</code></pre>
+
+<p>Deletion just marks the entity as empty. Didn’t mean to delete? Repost the value at history[1].</p>
+
+<pre><code>GET http://somedomain/someresource.json
+200
+{"head": {}, "history": ["http://somedomain/someresource/81sh13sga.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<h2>Conflict</h2>
+
+<p>Posting to a resource already modified by another actor</p>
+
+<pre><code>POST http://somedomain/someresource/18jsh18s2.json
+BODY {"key": "another value"}
+403
+
+GET http://somedomain/someresource.json
+{"head": {"key": "winning value"}, "history": ["http://somedomain/someresource/281s1sk1.json", "http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>Now resubmit, and hope for the best!</p>
+
+<p>This has some fun features:</p>
+
+<ul>
+<li>Only GET and POST</li>
+<li>Super cache-able. You can push your responses out to the CDN and treat them as static content.</li>
+<li>No transactions, but a clear path for conflict resolution</li>
+<li>I’ve used psuedo-hashes of the content as their ID. They could be integers, timestamps, salted-hashes.</li>
+<li>I’ve used JSON, but there is nothing preventing the use of other formats</li>
+<li>Time is now built in to the value in order to represent state.</li>
+<li>Clients can complete their processing on data from their copy of head in complete confidence</li>
+</ul>
+
+
+<p>  I could foresee using query parameters in the same way REST does. For example:</p>
+
+<pre><code>GET http://somedomain/someresource.json?start=1
+200
+{"head": {}, "history": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+
+<p>or history searches</p>
+
+<pre><code>GET http://somedomain/someresource.json?key=value
+200
+{"results": ["http://somedomain/someresource/18jsh18s2.json"]}
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Tom Marsh</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-21T09:22:00-04:00" pubdate data-updated="true">Apr 21<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rest-/'>REST,</a>, <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tsmarsh.github.com/blog/2013/04/21/pest/" data-via="tsmarsh" data-counturl="http://tsmarsh.github.com/blog/2013/04/21/pest/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/01/can-we-avoid-problems-like-this/" title="Previous Post: Can we avoid problems like this?">&laquo; Can we avoid problems like this?</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/06/25/a-pet-pest-project/" title="Next Post: Breaking down the 10x developer myth">Breaking down the 10x developer myth &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/06/25/a-pet-pest-project/">Breaking down the 10x developer myth</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/21/pest/">Pest</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/01/can-we-avoid-problems-like-this/">Can we avoid problems like this?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/07/apple-installers-do-not-work-how-you-think/">What do Installers do?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/17/working-with-agilistas/">Agile engagement anti patterns</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/tsmarsh">@tsmarsh</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'tsmarsh',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("tsmarsh", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/tsmarsh" class="twitter-follow-button" data-show-count="false">Follow @tsmarsh</a>
+  
+</section>
+
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/ts.marsh?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/ts.marsh">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/tsmarsh?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Tom Marsh -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'tailoredthoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://tsmarsh.github.com/blog/2013/04/21/pest/';
+        var disqus_url = 'http://tsmarsh.github.com/blog/2013/04/21/pest/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
